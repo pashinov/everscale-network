@@ -41,7 +41,7 @@ impl PeersIter {
             };
 
             if add {
-                tracing::warn!(peer_id, "Add peer");
+                tracing::warn!("Add peer: {}", peer_id);
                 self.peer_ids.push((affinity, peer_id))
             }
         }
