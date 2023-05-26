@@ -68,7 +68,7 @@ impl PeersIter {
                 }
 
                 // Remove prefix
-                self.peer_ids.drain(..self.peer_ids.len() - remaining_count);
+                // self.peer_ids.drain(..self.peer_ids.len() - remaining_count);
             }
         }
 
