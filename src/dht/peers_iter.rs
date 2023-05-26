@@ -41,10 +41,12 @@ impl PeersIter {
             };
 
             if add {
-                tracing::warn!("Add peer");
+                tracing::warn!(peer_id, "Add peer");
                 self.peer_ids.push((affinity, peer_id))
             }
         }
+
+        tracing::warn!("Number of peers before filter: {}", self.peer_ids.len());
 
         // Sort peer ids by ascending affinity
         self.peer_ids
@@ -69,6 +71,8 @@ impl PeersIter {
                 self.peer_ids.drain(..self.peer_ids.len() - remaining_count);
             }
         }
+
+        tracing::warn!("Number of peers after filter: {}", self.peer_ids.len());
     }
 
     fn next_known_peer(&mut self, dht: &Node) -> Option<adnl::NodeIdShort> {

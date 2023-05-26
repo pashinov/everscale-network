@@ -71,6 +71,8 @@ where
 
         // Spawn at most `max_tasks` queries
         while let Some(peer_id) = self.peers_iter.next() {
+            tracing::warn!("Iterate over peers");
+
             let dht = self.dht.clone();
             let query = self.query.clone();
 
