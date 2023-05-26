@@ -67,22 +67,33 @@ where
     }
 
     fn refill_futures(&mut self) {
+        tracing::warn!("Run refill_futures");
+
         // Spawn at most `max_tasks` queries
         while let Some(peer_id) = self.peers_iter.next() {
             let dht = self.dht.clone();
             let query = self.query.clone();
 
             self.futures.push(Box::pin(async move {
+                tracing::warn!("Run query_raw");
+
                 match dht.query_raw(&peer_id, query).await {
-                    Ok(Some(result)) => match dht.parse_value_result::<T>(&result) {
-                        Ok(Some(value)) => Some(value),
-                        Ok(None) => None,
-                        Err(e) => {
-                            tracing::warn!("failed to parse queried value: {e}");
-                            None
+                    Ok(Some(result)) => {
+                        tracing::warn!("Run query_raw is Ok(Some)");
+
+                        match dht.parse_value_result::<T>(&result) {
+                            Ok(Some(value)) => Some(value),
+                            Ok(None) => None,
+                            Err(e) => {
+                                tracing::warn!("failed to parse queried value: {e}");
+                                None
+                            }
                         }
-                    },
-                    Ok(None) => None,
+                    }
+                    Ok(None) => {
+                        tracing::warn!("Run query_raw is Ok(None)");
+                        None
+                    }
                     Err(e) => {
                         tracing::warn!("failed to query value: {e}");
                         None
@@ -105,6 +116,8 @@ where
     type Item = ReceivedValue<T>;
 
     fn poll_next(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Option<Self::Item>> {
+        tracing::warn!("Run poll_next");
+
         let this = self.get_mut();
 
         // Fill iterator during the first poll
@@ -114,6 +127,8 @@ where
         }
 
         loop {
+            tracing::warn!("Loop poll_next");
+
             // Keep starting new futures when we can
             if this.future_count < MAX_PARALLEL_FUTURES {
                 this.refill_futures();
