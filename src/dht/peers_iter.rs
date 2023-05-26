@@ -23,8 +23,12 @@ impl PeersIter {
     }
 
     pub fn fill(&mut self, dht: &Node, batch_len: Option<usize>) {
+        tracing::warn!("PeersIter fill");
+
         // Get next peer (skipping bad peers) and update the index
         while let Some(peer_id) = self.next_known_peer(dht) {
+            tracing::warn!("Get next peer and update the index");
+
             let affinity = get_affinity(&self.key_id, peer_id.as_slice());
 
             // Keep adding peer ids until max tasks is reached
@@ -37,6 +41,7 @@ impl PeersIter {
             };
 
             if add {
+                tracing::warn!("Add peer");
                 self.peer_ids.push((affinity, peer_id))
             }
         }
