@@ -52,7 +52,7 @@ impl PeersIter {
                 let mut offset = 0;
                 tracing::warn!(top_affinity, batch_len, "clearing peer ids");
                 self.peer_ids
-                    .retain(|(affinity, _)| offset < batch_len || *affinity >= *top_affinity);
+                    .retain(|(affinity, _)| offset < batch_len || *affinity >= top_affinity);
             }
         }
 
