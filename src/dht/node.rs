@@ -291,6 +291,7 @@ impl Node {
                 .collect::<Vec<_>>()
                 .await;
             if received.is_empty() {
+                tracing::warn!(%overlay_id, "received is empty");
                 break;
             }
 
@@ -303,6 +304,8 @@ impl Node {
                 .flatten()
                 .chain(std::mem::take(&mut nodes).into_iter())
             {
+                tracing::warn!(%overlay_id, "received node {:?}", node.id);
+
                 let peer_id = match adnl::NodeIdFull::try_from(node.id.as_equivalent_ref())
                     .map(|full_id| full_id.compute_short_id())
                 {
